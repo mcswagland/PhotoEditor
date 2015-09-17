@@ -13,15 +13,28 @@ namespace PhotoEditor
 {
     public partial class Form1 : Form
     {
+        private FolderBrowserDialog folderBrowser;
+
+        //TODO: It says in the assignment that this is supposed to start out as the pictures directory
+        private string root = @"M:\";
+
         public Form1()
         {
             InitializeComponent();
         }
 
 
-        void form1_addDirectory(string dir)
+        void form1_addDirectory(TreeNode dir)
         {
-
+            if (directoryView.InvokeRequired)
+            {
+                UpdateTreeViewCallback callback = new UpdateTreeViewCallback(form1_addDirectory);
+                this.Invoke(callback, new object[] { dir });
+            }
+            else
+            {
+                directoryView.Nodes.Add(dir);
+            }
         }
 
         private void directoryWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -32,8 +45,8 @@ namespace PhotoEditor
 
             //addDirectory += form1_addDirectory;
             // change this to a variable probably holding the root directory
-            DirectoryInfo homeDir = new DirectoryInfo(@"M:\");
-            GetDirectories(homeDir);
+            DirectoryInfo homeDir = new DirectoryInfo(root);
+            form1_addDirectory(CreateDirectoryNode(homeDir));
             /*
             List<DirectoryInfo> directories = homeDir.GetDirectories().ToList();
             directories.Add(homeDir);
@@ -65,26 +78,35 @@ namespace PhotoEditor
              * */
         }
 
-        private void GetDirectories(DirectoryInfo info)
+        private delegate void UpdateTreeViewCallback(TreeNode name);
+
+        //Function by Alex Aza at http://stackoverflow.com/questions/6239544/populate-treeview-with-file-system-directory-structure
+        private TreeNode CreateDirectoryNode(DirectoryInfo directoryInfo)
         {
-            foreach(DirectoryInfo dir in info.GetDirectories())
-            {
-                if(info.Root.ToString() == info.Name)
-                {
-                    directoryView.Nodes.Add(info.Name);
-                }
-                else
-                {
-                    directoryView.Nodes.Add(info.Name, dir.Name);
-                }
-                GetDirectories(dir);
-            }
+            var directoryNode = new TreeNode(directoryInfo.Name);
+            foreach (var directory in directoryInfo.GetDirectories())
+                directoryNode.Nodes.Add(CreateDirectoryNode(directory));
+            return directoryNode;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             if (!directoryWorker.IsBusy)
                 directoryWorker.RunWorkerAsync();  
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void selectRootFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (folderBrowser == null)
+                folderBrowser = new FolderBrowserDialog();
+
+            if (folderBrowser.ShowDialog() == DialogResult.OK)
+                root = folderBrowser.SelectedPath;
         }
     }
 }
