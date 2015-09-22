@@ -16,11 +16,24 @@ namespace PhotoEditor
         private FolderBrowserDialog folderBrowser;
 
         //TODO: It says in the assignment that this is supposed to start out as the pictures directory
-        private string root = @"M:\";
+        private string root = @Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
+        private static string startingDirectory = @Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
+        private DirectoryInfo currentDirectory = new DirectoryInfo(startingDirectory);
+
+        private ImageList imageListSmall = new ImageList();
+        private ImageList imageListLarge = new ImageList();
 
         public Form1()
         {
             InitializeComponent();
+
+            imageListLarge.ImageSize = new Size(32, 32);
+            listView1.SmallImageList = imageListSmall;
+            listView1.LargeImageList = imageListLarge;
+            //change this to details
+            listView1.View = View.SmallIcon;
         }
 
 
@@ -51,28 +64,7 @@ namespace PhotoEditor
             List<DirectoryInfo> directories = homeDir.GetDirectories().ToList();
             directories.Add(homeDir);
             //directories.
-            foreach (DirectoryInfo dir in directories)
-            {
-                foreach (FileInfo file in dir.GetFiles())
-                {
-                    try
-                    {
-                        if (file.Extension.ToLower() == ".jpg")
-                        {
-                            byte[] bytes = System.IO.File.ReadAllBytes(file.FullName);
-                            MemoryStream ms = new MemoryStream(bytes);
-                            Image img = Image.FromStream(ms);
-                            Console.WriteLine("Filename: " + file.Name);
-                            Console.WriteLine("Last mod: " + file.LastWriteTime.ToString());
-                            Console.WriteLine("File size: " + file.Length);
-
-                            directoryView.Nodes.Add("");
-                        }
-                    }
-                    catch
-                    {
-                        Console.WriteLine("This is not an image file");
-                    }
+           
                 }
             }
              * */
@@ -105,8 +97,78 @@ namespace PhotoEditor
             if (folderBrowser == null)
                 folderBrowser = new FolderBrowserDialog();
 
-            if (folderBrowser.ShowDialog() == DialogResult.OK)
+            if (folderBrowser.ShowDialog() == DialogResult.OK && folderBrowser.SelectedPath != root)
+            {
+                directoryView.Nodes.Clear();
                 root = folderBrowser.SelectedPath;
+                if (!directoryWorker.IsBusy)
+                    directoryWorker.RunWorkerAsync();
+            }
         }
+
+        private delegate void SetProgressBarMaxCallback(int max);
+
+        void setProgressBarMax(int max)
+        {
+            if (progressBar1.InvokeRequired)
+            {
+                SetProgressBarMaxCallback callback = new SetProgressBarMaxCallback(setProgressBarMax);
+                this.Invoke(callback, max);
+            }
+            else
+            {
+                progressBar1.Maximum = max;
+            }
+        }
+
+        private void imageListWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int fileCount = currentDirectory.GetFiles().Count();
+            setProgressBarMax(fileCount);
+            int count = 0;
+            foreach (FileInfo file in currentDirectory.GetFiles())
+            {
+                count++;
+                try
+                {
+                    if (file.Extension.ToLower() == ".jpg")
+                    {
+                        byte[] bytes = System.IO.File.ReadAllBytes(file.FullName);
+                        MemoryStream ms = new MemoryStream(bytes);
+                        Image img = Image.FromStream(ms);
+                        imageListSmall.Images.Add(img);
+                        imageListLarge.Images.Add(img);
+                        Console.WriteLine("Filename: " + file.Name);
+                        Console.WriteLine("Last mod: " + file.LastWriteTime.ToString());
+                        Console.WriteLine("File size: " + file.Length);
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("This is not an image file");
+                }
+                imageListWorker.ReportProgress(count);
+            }
+            Console.WriteLine("Blah");
+        }
+
+        private void imageListWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void directoryView_Click(object sender, EventArgs e)
+        {
+            if (!imageListWorker.IsBusy)
+                imageListWorker.RunWorkerAsync();
+        }
+
+        private void directoryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (!imageListWorker.IsBusy)
+                imageListWorker.RunWorkerAsync();
+        }
+
+    
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.directoryView = new System.Windows.Forms.TreeView();
             this.listView1 = new System.Windows.Forms.ListView();
             this.directoryWorker = new System.ComponentModel.BackgroundWorker();
@@ -36,27 +37,32 @@
             this.locateOnDiskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectRootFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageListWorker = new System.ComponentModel.BackgroundWorker();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // directoryView
             // 
-            this.directoryView.Location = new System.Drawing.Point(12, 39);
+            this.directoryView.Location = new System.Drawing.Point(12, 62);
             this.directoryView.Name = "directoryView";
             this.directoryView.Size = new System.Drawing.Size(200, 398);
             this.directoryView.TabIndex = 0;
+            this.directoryView.Click += new System.EventHandler(this.directoryView_Click);
             // 
             // listView1
             // 
-            this.listView1.Location = new System.Drawing.Point(217, 39);
+            this.listView1.Location = new System.Drawing.Point(218, 62);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(572, 397);
+            this.listView1.Size = new System.Drawing.Size(572, 398);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             // 
             // directoryWorker
             // 
             this.directoryWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.directoryWorker_DoWork);
+            this.directoryWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.directoryWorker_RunWorkerCompleted);
             // 
             // menuStrip1
             // 
@@ -98,11 +104,31 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // imageListWorker
+            // 
+            this.imageListWorker.WorkerReportsProgress = true;
+            this.imageListWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.imageListWorker_DoWork);
+            this.imageListWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.imageListWorker_ProgressChanged);
+            // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 37);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(778, 19);
+            this.progressBar1.TabIndex = 3;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(801, 449);
+            this.ClientSize = new System.Drawing.Size(801, 492);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.directoryView);
             this.Controls.Add(this.menuStrip1);
@@ -127,6 +153,9 @@
         private System.Windows.Forms.ToolStripMenuItem locateOnDiskToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectRootFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.ComponentModel.BackgroundWorker imageListWorker;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
