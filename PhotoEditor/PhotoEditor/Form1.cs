@@ -24,12 +24,18 @@ namespace PhotoEditor
 
         private ImageList imageListSmall = new ImageList();
         private ImageList imageListLarge = new ImageList();
+        private List<Image> fullSizeImages = new List<Image>();
 
         public Form1()
         {
             InitializeComponent();
 
-            imageListLarge.ImageSize = new Size(32, 32);
+            listView1.Columns.Add("Name", -2, HorizontalAlignment.Left);
+            listView1.Columns.Add("Date", -2, HorizontalAlignment.Left);
+            listView1.Columns.Add("Size", 40, HorizontalAlignment.Right);
+
+            imageListLarge.ImageSize = new Size(100, 100);
+            imageListSmall.ImageSize = new Size(64, 64);
             listView1.SmallImageList = imageListSmall;
             listView1.LargeImageList = imageListLarge;
             //change this to details
@@ -121,14 +127,45 @@ namespace PhotoEditor
             }
         }
 
+        private delegate void AddImageToListViewCallback(ListViewItem item);
+
+        void addImageToListView(ListViewItem item)
+        {
+            if(listView1.InvokeRequired)
+            {
+                AddImageToListViewCallback callback = new AddImageToListViewCallback(addImageToListView);
+                this.Invoke(callback, item);
+            }
+            else
+            {
+                listView1.Items.Add(item);
+            }
+        }
+
+        private delegate void AddImageToImageViews(Image img);
+        void addImageToImageViews(Image img)
+        {
+            if(listView1.InvokeRequired)
+            {
+                AddImageToImageViews callback = new AddImageToImageViews(addImageToImageViews);
+                this.Invoke(callback, img);
+            }
+            else
+            {
+                imageListSmall.Images.Add(img);
+                imageListLarge.Images.Add(img);
+                fullSizeImages.Add(img);
+            }
+        }
+
         private void imageListWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            int fileCount = currentDirectory.GetFiles().Count();
+            int fileCount = currentDirectory.GetFiles().Where(x => x.Extension.ToLower() == ".jpg").Count();
             setProgressBarMax(fileCount);
+            List<FileInfo> imageFiles = new List<FileInfo>();
             int count = 0;
             foreach (FileInfo file in currentDirectory.GetFiles())
             {
-                count++;
                 try
                 {
                     if (file.Extension.ToLower() == ".jpg")
@@ -136,20 +173,20 @@ namespace PhotoEditor
                         byte[] bytes = System.IO.File.ReadAllBytes(file.FullName);
                         MemoryStream ms = new MemoryStream(bytes);
                         Image img = Image.FromStream(ms);
-                        imageListSmall.Images.Add(img);
-                        imageListLarge.Images.Add(img);
-                        Console.WriteLine("Filename: " + file.Name);
-                        Console.WriteLine("Last mod: " + file.LastWriteTime.ToString());
-                        Console.WriteLine("File size: " + file.Length);
+                        addImageToImageViews(img);
+                        ListViewItem item = new ListViewItem(file.Name, count);
+                        item.SubItems.Add(file.LastWriteTime.ToString());
+                        item.SubItems.Add(file.Length.ToString());
+                        addImageToListView(item);
+                        count++;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     Console.WriteLine("This is not an image file");
                 }
                 imageListWorker.ReportProgress(count);
             }
-            Console.WriteLine("Blah");
         }
 
         private void imageListWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -167,6 +204,20 @@ namespace PhotoEditor
         {
             if (!imageListWorker.IsBusy)
                 imageListWorker.RunWorkerAsync();
+        }
+
+        private void listView1_DoubleClick(object sender, EventArgs e)
+        {
+            PhotoEditorForm photoEditor = new PhotoEditorForm();
+            photoEditor.ShowDialog();
+        }
+
+        private void listView1_ItemActivate(object sender, EventArgs e)
+        {
+            var a = listView1.SelectedItems[0];
+            Image img = fullSizeImages[listView1.SelectedItems[0].ImageIndex];
+            PhotoEditorForm photoEditor = new PhotoEditorForm(img);
+            photoEditor.ShowDialog();
         }
 
     

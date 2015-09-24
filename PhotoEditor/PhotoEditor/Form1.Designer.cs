@@ -58,6 +58,7 @@
             this.listView1.Size = new System.Drawing.Size(572, 398);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.ItemActivate += new System.EventHandler(this.listView1_ItemActivate);
             // 
             // directoryWorker
             // 
