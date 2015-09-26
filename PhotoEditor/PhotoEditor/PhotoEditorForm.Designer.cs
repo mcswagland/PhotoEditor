@@ -36,6 +36,7 @@
             this.invertButton = new System.Windows.Forms.Button();
             this.photoEditorWorker = new System.ComponentModel.BackgroundWorker();
             this.brightnessBar = new System.Windows.Forms.TrackBar();
+            this.tintColorWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightnessBar)).BeginInit();
             this.SuspendLayout();
@@ -105,6 +106,11 @@
             this.brightnessBar.Value = 50;
             this.brightnessBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.brightnessBar_MouseUp);
             // 
+            // tintColorWorker
+            // 
+            this.tintColorWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.tintColorWorker_DoWork);
+            this.tintColorWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.tintColorWorker_ProgressChanged);
+            // 
             // PhotoEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -135,5 +141,6 @@
         private System.Windows.Forms.Button invertButton;
         private System.ComponentModel.BackgroundWorker photoEditorWorker;
         private System.Windows.Forms.TrackBar brightnessBar;
+        private System.ComponentModel.BackgroundWorker tintColorWorker;
     }
 }

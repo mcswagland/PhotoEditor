@@ -15,6 +15,8 @@ namespace PhotoEditor
 
         private Image originalImage;
         private Bitmap transformedBitmap;
+        private delegate void TintImageCallback(Color color);
+        public ProgressWindow progressWindow;
 
         public PhotoEditorForm()
         {
@@ -42,23 +44,40 @@ namespace PhotoEditor
 
         private void colorButton_Click(object sender, EventArgs e)
         {
-
+            ColorDialog colorDialog = new ColorDialog();
+            Color tint = Color.Red;
+            
+            if(colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                 tint = colorDialog.Color;
+            }
+            if(!tintColorWorker.IsBusy)
+            {
+               tintColorWorker.RunWorkerAsync(tint);
+            }
         }
 
         private void invertButton_Click(object sender, EventArgs e)
         {
-
+            if (!photoEditorWorker.IsBusy)
+            {
+                photoEditorWorker.RunWorkerAsync(2);
+            }
         }
 
-        //private void photoEditorWorker_DoWork(object sender, DoWorkEventArgs e, int OptionSelect)
-        //{
+        private void photoEditorWorker_DoWork(object sender, DoWorkEventArgs e, int OptionSelect)
+        {
 
-        //}
+        }
 
         private void InvertColors()
         {
 
-            
+            if(this.InvokeRequired)
+            {
+
+                
+            }
 
             for (int y = 0; y < transformedBitmap.Height; y++)
             {
@@ -79,17 +98,29 @@ namespace PhotoEditor
 
         private void TintImage(Color color)
         {
-            for(int y = 0; y < transformedBitmap.Height; y++)
+            if (this.InvokeRequired)
             {
-                for(int x = 0; x < transformedBitmap.Width; x++)
+                TintImageCallback callback = new TintImageCallback(TintImage);
+                this.Invoke(callback, color);
+            }
+            else
+            {
+                setProgressBarMax(transformedBitmap.Height * transformedBitmap.Width);
+                int count = 0;
+                for (int y = 0; y < transformedBitmap.Height; y++)
                 {
-                    Color pictureColor = transformedBitmap.GetPixel(x, y);
-                    float rgbAverage = (((float)(pictureColor.R + pictureColor.G + pictureColor.B) / 3) / 255);
-                    int newR = (int)(color.R * rgbAverage);
-                    int newG = (int)(color.G * rgbAverage);
-                    int newB = (int)(color.B * rgbAverage);
-                    Color newColor = Color.FromArgb(newR, newG, newB);
-                    transformedBitmap.SetPixel(x, y, newColor);
+                    for (int x = 0; x < transformedBitmap.Width; x++)
+                    {
+                        Color pictureColor = transformedBitmap.GetPixel(x, y);
+                        float rgbAverage = (((float)(pictureColor.R + pictureColor.G + pictureColor.B) / 3) / 255);
+                        int newR = (int)(color.R * rgbAverage);
+                        int newG = (int)(color.G * rgbAverage);
+                        int newB = (int)(color.B * rgbAverage);
+                        Color newColor = Color.FromArgb(newR, newG, newB);
+                        transformedBitmap.SetPixel(x, y, newColor);
+                        count++;
+                        tintColorWorker.ReportProgress(count);
+                    }
                 }
             }
 
@@ -100,7 +131,10 @@ namespace PhotoEditor
 
         private void brightnessBar_MouseUp(object sender, MouseEventArgs e)
         {
-            ChangeBrightness();
+            if (!photoEditorWorker.IsBusy)
+            {
+                photoEditorWorker.RunWorkerAsync(1);
+            }
         }
 
         private void ChangeBrightness()
@@ -156,6 +190,39 @@ namespace PhotoEditor
             }
 
             pictureBox1.Image = transformedBitmap;
+        }
+
+        private delegate void SetProgressBarMaxCallback(int max);
+
+        void setProgressBarMax(int max)
+        {
+            if (colorButton.InvokeRequired)
+            {
+                SetProgressBarMaxCallback callback = new SetProgressBarMaxCallback(setProgressBarMax);
+                this.Invoke(callback, max);
+            }
+            else
+            {
+                progressWindow.setProgressBarMax(max);
+            }
+        }
+
+        private void tintColorWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Color tint =  (Color)e.Argument;
+            if(progressWindow == null)
+            {
+                progressWindow = new ProgressWindow();
+            }
+            progressWindow.Show();
+
+            TintImage(tint);
+            
+        }
+
+        private void tintColorWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressWindow.setProgressPercentage(e.ProgressPercentage);
         }
     }
 }
