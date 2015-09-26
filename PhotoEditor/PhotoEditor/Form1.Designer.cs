@@ -50,7 +50,7 @@
             this.directoryView.Name = "directoryView";
             this.directoryView.Size = new System.Drawing.Size(200, 398);
             this.directoryView.TabIndex = 0;
-            this.directoryView.Click += new System.EventHandler(this.directoryView_Click);
+            this.directoryView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.directoryView_NodeMouseClick);
             // 
             // listView1
             // 
@@ -109,8 +109,10 @@
             // imageListWorker
             // 
             this.imageListWorker.WorkerReportsProgress = true;
+            this.imageListWorker.WorkerSupportsCancellation = true;
             this.imageListWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.imageListWorker_DoWork);
             this.imageListWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.imageListWorker_ProgressChanged);
+            this.imageListWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.imageListWorker_RunWorkerCompleted);
             // 
             // imageList1
             // 

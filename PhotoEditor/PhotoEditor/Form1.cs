@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Threading;
 
 namespace PhotoEditor
 {
@@ -25,6 +26,8 @@ namespace PhotoEditor
         private ImageList imageListSmall = new ImageList();
         private ImageList imageListLarge = new ImageList();
         private List<Image> fullSizeImages = new List<Image>();
+
+        private AutoResetEvent doneEvent = new AutoResetEvent(false);
 
         public Form1()
         {
@@ -58,22 +61,8 @@ namespace PhotoEditor
 
         private void directoryWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            //public delegate void addDirectoryDelegate(string dirName);
-
-            //public event addDirectoryDelegate addDirectory;
-
-            //addDirectory += form1_addDirectory;
-            // change this to a variable probably holding the root directory
             DirectoryInfo homeDir = new DirectoryInfo(root);
             form1_addDirectory(CreateDirectoryNode(homeDir));
-            /*
-            List<DirectoryInfo> directories = homeDir.GetDirectories().ToList();
-            directories.Add(homeDir);
-            //directories.
-           
-                }
-            }
-             * */
         }
 
         private delegate void UpdateTreeViewCallback(TreeNode name);
@@ -161,13 +150,17 @@ namespace PhotoEditor
 
         private void imageListWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            
             int fileCount = currentDirectory.GetFiles().Where(x => x.Extension.ToLower() == ".jpg").Count();
             setProgressBarMax(fileCount);
             List<FileInfo> imageFiles = new List<FileInfo>();
             int count = 0;
             foreach (FileInfo file in currentDirectory.GetFiles())
             {
+                if(imageListWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    break;
+                }
                 try
                 {
                     if (file.Extension.ToLower() == ".jpg")
@@ -194,48 +187,21 @@ namespace PhotoEditor
         private void imageListWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
-            if(progressBar1.Value == progressBar1.Maximum)
-            {
-                progressBar1.Dispose();
-            }
-        }
-
-        private void directoryView_Click(object sender, EventArgs e)
-        {
-            listView1.SmallImageList.Images.Clear();
-            listView1.LargeImageList.Images.Clear();
-            listView1.Clear();
-            if (directoryView.SelectedNode != null)
-            {
-                if (directoryView.SelectedNode.Text != root.Substring(root.LastIndexOf('\\') + 1))
-                {
-                    string path = root.Substring(0, root.LastIndexOf('\\')) + '\\' + buildDirectoryPath(directoryView.SelectedNode, directoryView.SelectedNode.Text);
-                    currentDirectory = new DirectoryInfo(path);
-                }
-                else
-                {
-                    currentDirectory = new DirectoryInfo(root);
-                }
-            }
-            
-            if (!imageListWorker.IsBusy)
-                imageListWorker.RunWorkerAsync();
         }
 
         private string buildDirectoryPath(TreeNode node, string path)
         {
             string result = path;
-            //if (node.Parent.Text != root.Substring(root.LastIndexOf('\\'))) 
             if(node.Parent != null)
             {
-                result = node.Parent.Text + '\\' + result;
-                buildDirectoryPath(node.Parent, result);
+                result = buildDirectoryPath(node.Parent, node.Parent.Text) + '\\' + result;
             }
             return result;
         }
 
         private void directoryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            directoryView.SelectedNode = directoryView.TopNode;
             if (!imageListWorker.IsBusy)
                 imageListWorker.RunWorkerAsync();
         }
@@ -252,6 +218,53 @@ namespace PhotoEditor
             Image img = fullSizeImages[listView1.SelectedItems[0].ImageIndex];
             PhotoEditorForm photoEditor = new PhotoEditorForm(img);
             photoEditor.ShowDialog();
+        }
+
+
+        // thanks to Viacheslav Smityukh at stackoverflow for creating this function
+        // http://stackoverflow.com/questions/4702506/treenode-selection-problems-in-c-sharp
+        private bool IsClickOnText(TreeView treeView, TreeNode node, Point location)
+        {
+            var hitTest = treeView.HitTest(location);
+
+            return hitTest.Node == node
+                && hitTest.Location == TreeViewHitTestLocations.Label;
+        }
+
+        private void directoryView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (IsClickOnText(directoryView, e.Node, e.Location))
+            {
+                //if the user clicks on the node they're already on, don't do anything, otherwise load the images
+                if (directoryView.SelectedNode.Text != e.Node.Text)
+                {
+                    if (imageListWorker.IsBusy)
+                    {
+                        imageListWorker.CancelAsync();
+                    }
+                    listView1.SmallImageList.Images.Clear();
+                    listView1.LargeImageList.Images.Clear();
+                    listView1.Clear();
+
+                    if (e.Node.Text != root.Substring(root.LastIndexOf('\\') + 1))
+                    {
+                        string path = root.Substring(0, root.LastIndexOf('\\')) + '\\' + buildDirectoryPath(e.Node, e.Node.Text);
+                        currentDirectory = new DirectoryInfo(path);
+                    }
+                    else
+                    {
+                        currentDirectory = new DirectoryInfo(root);
+                    }
+
+                    if (!imageListWorker.IsBusy)
+                        imageListWorker.RunWorkerAsync();
+                }
+            }
+        }
+
+        private void imageListWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            progressBar1.Dispose();
         }
 
     
