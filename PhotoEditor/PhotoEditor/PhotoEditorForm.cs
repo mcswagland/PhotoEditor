@@ -95,5 +95,67 @@ namespace PhotoEditor
 
             pictureBox1.Image = transformedBitmap;
         }
+
+     
+
+        private void brightnessBar_MouseUp(object sender, MouseEventArgs e)
+        {
+            ChangeBrightness();
+        }
+
+        private void ChangeBrightness()
+        {
+            for (int y = 0; y < transformedBitmap.Height; y++)
+            {
+                for (int x = 0; x < transformedBitmap.Width; x++)
+                {
+                    
+
+                    Color pictureColor = transformedBitmap.GetPixel(x, y);
+                    int amount = Convert.ToInt32(2 * (50 - brightnessBar.Value) * 0.01 * 255);
+                    int newR = pictureColor.R - amount;
+                    int newG = pictureColor.G - amount;
+                    int newB = pictureColor.B - amount;
+
+                    if (newR >255)
+                    {
+                        newR = 255;
+                    }
+
+                    if (newG > 255)
+                    {
+                        newG = 255;
+                    }
+
+                    if (newB > 255)
+                    {
+                        newB = 255;
+                    }
+
+                    if (newR < 0)
+                    {
+                        newR = 0;
+                    }
+
+                    if (newG < 0)
+                    {
+                        newG = 0;
+                    }
+
+                    if (newB < 0)
+                    {
+                        newB = 0;
+                    }
+
+
+                    Color brightnessColor = Color.FromArgb(newR, newG, newB);
+                    transformedBitmap.SetPixel(x, y, brightnessColor);
+
+                    
+                }
+            }
+
+            pictureBox1.Image = transformedBitmap;
+        }
     }
 }

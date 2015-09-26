@@ -35,7 +35,9 @@
             this.colorButton = new System.Windows.Forms.Button();
             this.invertButton = new System.Windows.Forms.Button();
             this.photoEditorWorker = new System.ComponentModel.BackgroundWorker();
+            this.brightnessBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.brightnessBar)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -93,11 +95,22 @@
             this.photoEditorWorker.WorkerReportsProgress = true;
             this.photoEditorWorker.WorkerSupportsCancellation = true;
             // 
+            // brightnessBar
+            // 
+            this.brightnessBar.Location = new System.Drawing.Point(12, 421);
+            this.brightnessBar.Maximum = 100;
+            this.brightnessBar.Name = "brightnessBar";
+            this.brightnessBar.Size = new System.Drawing.Size(204, 45);
+            this.brightnessBar.TabIndex = 5;
+            this.brightnessBar.Value = 50;
+            this.brightnessBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.brightnessBar_MouseUp);
+            // 
             // PhotoEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(474, 555);
+            this.Controls.Add(this.brightnessBar);
             this.Controls.Add(this.invertButton);
             this.Controls.Add(this.colorButton);
             this.Controls.Add(this.cancelButton);
@@ -107,7 +120,9 @@
             this.Name = "PhotoEditorForm";
             this.Text = "PhotoEditorForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.brightnessBar)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -119,5 +134,6 @@
         private System.Windows.Forms.Button colorButton;
         private System.Windows.Forms.Button invertButton;
         private System.ComponentModel.BackgroundWorker photoEditorWorker;
+        private System.Windows.Forms.TrackBar brightnessBar;
     }
 }
