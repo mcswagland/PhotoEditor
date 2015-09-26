@@ -27,7 +27,7 @@ namespace PhotoEditor
             this.pictureBox1.Image = image;
             originalImage = image;
             transformedBitmap = (Bitmap)image;
-            InvertColors();
+            //TintImage(Color.Red);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -75,6 +75,25 @@ namespace PhotoEditor
 
             pictureBox1.Image = transformedBitmap;
             //pictureBox1.Invalidate();
+        }
+
+        private void TintImage(Color color)
+        {
+            for(int y = 0; y < transformedBitmap.Height; y++)
+            {
+                for(int x = 0; x < transformedBitmap.Width; x++)
+                {
+                    Color pictureColor = transformedBitmap.GetPixel(x, y);
+                    float rgbAverage = (((float)(pictureColor.R + pictureColor.G + pictureColor.B) / 3) / 255);
+                    int newR = (int)(color.R * rgbAverage);
+                    int newG = (int)(color.G * rgbAverage);
+                    int newB = (int)(color.B * rgbAverage);
+                    Color newColor = Color.FromArgb(newR, newG, newB);
+                    transformedBitmap.SetPixel(x, y, newColor);
+                }
+            }
+
+            pictureBox1.Image = transformedBitmap;
         }
     }
 }
