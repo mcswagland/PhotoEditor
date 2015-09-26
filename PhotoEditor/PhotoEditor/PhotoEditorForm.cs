@@ -13,7 +13,7 @@ namespace PhotoEditor
     public partial class PhotoEditorForm : Form
     {
 
-        private Image originalImage;
+        private Bitmap originalImage;
         private Bitmap transformedBitmap;
         private delegate void TintImageCallback(Color color);
         public ProgressWindow progressWindow;
@@ -29,7 +29,7 @@ namespace PhotoEditor
         {
             InitializeComponent();
             this.pictureBox1.Image = image;
-            originalImage = image;
+            originalImage = new Bitmap(image);
             transformedBitmap = (Bitmap)image;
             
         }
@@ -46,6 +46,7 @@ namespace PhotoEditor
 
         private void colorButton_Click(object sender, EventArgs e)
         {
+            var preTransformImage = new Bitmap(transformedBitmap);
             ColorDialog colorDialog = new ColorDialog();
 
             if (colorDialog.ShowDialog() == DialogResult.OK)
@@ -57,39 +58,51 @@ namespace PhotoEditor
                 return;
             }
             progressWindow = new ProgressWindow(2, tint, transformedBitmap);
-            progressWindow.Show();
+            
+            DialogResult result = progressWindow.ShowDialog();
+            if(result != DialogResult.Cancel)
+            {
+                pictureBox1.Image = transformedBitmap;
+            }
+            else
+            {
+                transformedBitmap = preTransformImage;
+            }
 
-            pictureBox1.Image = transformedBitmap;
+            pictureBox1.Image = new Bitmap(transformedBitmap);
         }
 
         private void invertButton_Click(object sender, EventArgs e)
         {
+            var preTransformImage = new Bitmap(transformedBitmap);
             progressWindow = new ProgressWindow(3, transformedBitmap);
-            progressWindow.Show();
+            DialogResult result = progressWindow.ShowDialog();
 
-       
-
-            pictureBox1.Image = transformedBitmap;
+            if(result != DialogResult.Cancel)
+            {
+                pictureBox1.Image = transformedBitmap;
+            }
+            else
+            {
+                transformedBitmap = preTransformImage;
+            }
         }
 
 
         private void brightnessBar_MouseUp(object sender, MouseEventArgs e)
         {
+            var preTransformImage = new Bitmap(transformedBitmap);
             progressWindow = new ProgressWindow(1, brightnessBar.Value, transformedBitmap);
-            progressWindow.Show();
+            DialogResult result = progressWindow.ShowDialog();
 
-            pictureBox1.Image = transformedBitmap;
-        }
-
-
-
-        
-
-
-
-       
-
-      
-        
+            if(result != DialogResult.Cancel)
+            {
+                pictureBox1.Image = transformedBitmap;
+            }
+            else
+            {
+                transformedBitmap = preTransformImage;
+            }
+        }  
     }
 }

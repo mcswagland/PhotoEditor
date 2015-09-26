@@ -17,6 +17,7 @@ namespace PhotoEditor
             InitializeComponent();
             optionSelected = selection;
             transformedBitmap = bitmap;
+            originalImage = new Bitmap(bitmap);
             if(!progressBarWorker.IsBusy)
             {
                 progressBarWorker.RunWorkerAsync();
@@ -31,6 +32,7 @@ namespace PhotoEditor
             optionSelected = selection;
             selectedBrightness = brightness;
             transformedBitmap = bitmap;
+            originalImage = new Bitmap(bitmap);
 
             if (!progressBarWorker.IsBusy)
             {
@@ -44,6 +46,7 @@ namespace PhotoEditor
             optionSelected = selection;
             selectedColor = color;
             transformedBitmap = bitmap;
+            originalImage = new Bitmap(bitmap);
 
             if (!progressBarWorker.IsBusy)
             {
@@ -53,6 +56,7 @@ namespace PhotoEditor
 
         private Color selectedColor;
         private int optionSelected;
+        private Bitmap originalImage;
         private Bitmap transformedBitmap;
         private int selectedBrightness;
 
@@ -238,6 +242,7 @@ namespace PhotoEditor
         {
            if(progressBarWorker.WorkerSupportsCancellation)
            {
+               transformedBitmap = originalImage;
                progressBarWorker.CancelAsync();
            }
         }
@@ -246,7 +251,11 @@ namespace PhotoEditor
         {
             if(e.Cancelled)
             {
-
+                this.DialogResult = DialogResult.Cancel;
+            }
+            else
+            {
+                this.DialogResult = DialogResult.OK;
             }
             Close();
         }

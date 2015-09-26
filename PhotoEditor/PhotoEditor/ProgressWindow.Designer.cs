@@ -72,6 +72,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ProgressWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Transforming...";
             this.ResumeLayout(false);
 
