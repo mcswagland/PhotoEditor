@@ -106,11 +106,6 @@
             this.brightnessBar.Value = 50;
             this.brightnessBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.brightnessBar_MouseUp);
             // 
-            // tintColorWorker
-            // 
-            this.tintColorWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.tintColorWorker_DoWork);
-            this.tintColorWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.tintColorWorker_ProgressChanged);
-            // 
             // PhotoEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

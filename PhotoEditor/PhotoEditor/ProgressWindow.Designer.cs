@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgressWindow));
             this.transformBar = new System.Windows.Forms.ProgressBar();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.progressBarWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // transformBar
@@ -43,12 +44,21 @@
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(173, 87);
+            this.cancelButton.Location = new System.Drawing.Point(191, 87);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // progressBarWorker
+            // 
+            this.progressBarWorker.WorkerReportsProgress = true;
+            this.progressBarWorker.WorkerSupportsCancellation = true;
+            this.progressBarWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.progressBarWorker_DoWork);
+            this.progressBarWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.progressBarWorker_ProgressChanged);
+            this.progressBarWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.progressBarWorker_RunWorkerCompleted);
             // 
             // ProgressWindow
             // 
@@ -71,5 +81,6 @@
 
         private System.Windows.Forms.ProgressBar transformBar;
         private System.Windows.Forms.Button cancelButton;
+        private System.ComponentModel.BackgroundWorker progressBarWorker;
     }
 }
