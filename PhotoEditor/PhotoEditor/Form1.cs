@@ -194,16 +194,44 @@ namespace PhotoEditor
         private void imageListWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
+            if(progressBar1.Value == progressBar1.Maximum)
+            {
+                progressBar1.Dispose();
+            }
         }
 
         private void directoryView_Click(object sender, EventArgs e)
         {
-
             listView1.SmallImageList.Images.Clear();
             listView1.LargeImageList.Images.Clear();
+            listView1.Clear();
+            if (directoryView.SelectedNode != null)
+            {
+                if (directoryView.SelectedNode.Text != root.Substring(root.LastIndexOf('\\') + 1))
+                {
+                    string path = root.Substring(0, root.LastIndexOf('\\')) + '\\' + buildDirectoryPath(directoryView.SelectedNode, directoryView.SelectedNode.Text);
+                    currentDirectory = new DirectoryInfo(path);
+                }
+                else
+                {
+                    currentDirectory = new DirectoryInfo(root);
+                }
+            }
             
             if (!imageListWorker.IsBusy)
                 imageListWorker.RunWorkerAsync();
+        }
+
+        private string buildDirectoryPath(TreeNode node, string path)
+        {
+            string result = path;
+            //if (node.Parent.Text != root.Substring(root.LastIndexOf('\\'))) 
+            if(node.Parent != null)
+            {
+                result = node.Parent.Text + '\\' + result;
+                buildDirectoryPath(node.Parent, result);
+            }
+            return result;
         }
 
         private void directoryWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
