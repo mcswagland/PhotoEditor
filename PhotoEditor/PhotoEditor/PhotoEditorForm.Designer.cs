@@ -28,9 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PhotoEditorForm));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.colorButton = new System.Windows.Forms.Button();
+            this.invertButton = new System.Windows.Forms.Button();
+            this.photoEditorWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -45,7 +49,7 @@
             // saveButton
             // 
             this.saveButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.saveButton.Location = new System.Drawing.Point(259, 427);
+            this.saveButton.Location = new System.Drawing.Point(240, 516);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(74, 27);
             this.saveButton.TabIndex = 1;
@@ -56,7 +60,7 @@
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(360, 427);
+            this.cancelButton.Location = new System.Drawing.Point(365, 516);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(74, 27);
             this.cancelButton.TabIndex = 2;
@@ -64,14 +68,43 @@
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // colorButton
+            // 
+            this.colorButton.Location = new System.Drawing.Point(240, 421);
+            this.colorButton.Name = "colorButton";
+            this.colorButton.Size = new System.Drawing.Size(75, 23);
+            this.colorButton.TabIndex = 3;
+            this.colorButton.Text = "Color";
+            this.colorButton.UseVisualStyleBackColor = true;
+            this.colorButton.Click += new System.EventHandler(this.colorButton_Click);
+            // 
+            // invertButton
+            // 
+            this.invertButton.Location = new System.Drawing.Point(364, 421);
+            this.invertButton.Name = "invertButton";
+            this.invertButton.Size = new System.Drawing.Size(75, 23);
+            this.invertButton.TabIndex = 4;
+            this.invertButton.Text = "Invert";
+            this.invertButton.UseVisualStyleBackColor = true;
+            this.invertButton.Click += new System.EventHandler(this.invertButton_Click);
+            // 
+            // photoEditorWorker
+            // 
+            this.photoEditorWorker.WorkerReportsProgress = true;
+            this.photoEditorWorker.WorkerSupportsCancellation = true;
+            this.photoEditorWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.photoEditorWorker_DoWork);
+            // 
             // PhotoEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(474, 466);
+            this.ClientSize = new System.Drawing.Size(474, 555);
+            this.Controls.Add(this.invertButton);
+            this.Controls.Add(this.colorButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.pictureBox1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PhotoEditorForm";
             this.Text = "PhotoEditorForm";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -84,5 +117,8 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Button colorButton;
+        private System.Windows.Forms.Button invertButton;
+        private System.ComponentModel.BackgroundWorker photoEditorWorker;
     }
 }

@@ -117,4 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="photoEditorWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAIAICAQAAAABADoAgAAJgAAABAQEAAAAAQAKAEAAA4DAAAoAAAAIAAAAEAAAAABAAQAAAAAAAAC
+        AAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAgAAAgAAAAICAAIAAAACAAIAAgIAAAICAgADAwMAAAAD/AAD/
+        AAAA//8A/wAAAP8A/wD//wAA////AIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiHiIiIAAAAAAAA
+        AAAAAAAAAAAAAIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIeIiIiIAAAAAAAAAAAAAAAAAAAAAIiI
+        iIiIiIiIiIiHiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIAAAAAIiIiIiIiIiIiIiIiAAAAACIiIiI
+        iIh3d3d3AAAAAAAAAAB3d3d3d3d3dwAAAAAAAAAAd3d3d3d3dwAAAAAAAAAAAAB3d3d3d3cAD/8AAAAA
+        AAAAd3d3d3d3AA////AAAAAAAHd3d3d3dwAP////AAAAAAB3d3d3d3cAD////wAAAAAAd3d3d3d3AA//
+        //8AAAAAAHd3d3d3dwAP///4AAAAAAB3d3d3d3cAD/+P/wAAAAAAd3d3d3d3dwD//wAAAAAAd3d3d3d3
+        d3cAD//wAAAAAHd3d3eIiIiIiIgAAAAAiIiIiIiIiIiIiIiIAAAAAIiIiIiIiIiIiIiIiIiIiIiIiIiI
+        iIiIiIiIiIiIiIiIiIiIiIiIAAAACIiIiIiIiIiIiIiIiA7u7giIiIiIiIiIiIiIiIgO7u4IiIiIiIiI
+        iIiIiIiID//uCIiIiIiIiIiIiIiIiA//7giIiIiIiIiIiIiIiIgP/u4IiIiIiIiIiIiIiIiIAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAoAAAAEAAAACAAAAABAAQAAAAAAIAAAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAgAAAgAAAAICAAIAA
+        AACAAIAAgIAAAICAgADAwMAAAAD/AAD/AAAA//8A/wAAAP8A/wD//wAA////AP8AAAAAAAAA//AAAAAA
+        AAAP//AAAAAAAAD//wAAAAAAAP//8AAAAACAD///AAAAAIgAD//wAAAAiIAAAAAAAIiIiIgAAAiIiIiI
+        iIiIiIiIAAAACIiIiIgO7u4IiIiIiA7u7giIiIiID//uCIiIiIgP/+4IiIiIiA/+7giIiIiIAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+</value>
+  </data>
 </root>

@@ -105,6 +105,7 @@ namespace PhotoEditor
 
             if (folderBrowser.ShowDialog() == DialogResult.OK && folderBrowser.SelectedPath != root)
             {
+
                 directoryView.Nodes.Clear();
                 root = folderBrowser.SelectedPath;
                 if (!directoryWorker.IsBusy)
@@ -160,6 +161,7 @@ namespace PhotoEditor
 
         private void imageListWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            
             int fileCount = currentDirectory.GetFiles().Where(x => x.Extension.ToLower() == ".jpg").Count();
             setProgressBarMax(fileCount);
             List<FileInfo> imageFiles = new List<FileInfo>();
@@ -196,6 +198,10 @@ namespace PhotoEditor
 
         private void directoryView_Click(object sender, EventArgs e)
         {
+
+            listView1.SmallImageList.Images.Clear();
+            listView1.LargeImageList.Images.Clear();
+            
             if (!imageListWorker.IsBusy)
                 imageListWorker.RunWorkerAsync();
         }
