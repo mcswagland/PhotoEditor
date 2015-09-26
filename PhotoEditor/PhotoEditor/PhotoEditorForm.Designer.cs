@@ -92,7 +92,6 @@
             // 
             this.photoEditorWorker.WorkerReportsProgress = true;
             this.photoEditorWorker.WorkerSupportsCancellation = true;
-            this.photoEditorWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.photoEditorWorker_DoWork);
             // 
             // PhotoEditorForm
             // 

@@ -26,6 +26,8 @@ namespace PhotoEditor
             InitializeComponent();
             this.pictureBox1.Image = image;
             originalImage = image;
+            transformedBitmap = (Bitmap)image;
+            InvertColors();
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -48,25 +50,31 @@ namespace PhotoEditor
 
         }
 
-        private void photoEditorWorker_DoWork(object sender, DoWorkEventArgs e, int OptionSelect)
-        {
+        //private void photoEditorWorker_DoWork(object sender, DoWorkEventArgs e, int OptionSelect)
+        //{
 
-        }
+        //}
 
         private void InvertColors()
         {
-            //for (int y = 0; y < transformedBitmap.Height; y++)
-            //{
-            //    for (int x = 0; x < transformedBitmap.Width; x++)
-            //    {
-            //        Color color = transformedBitmap.GetPixel(x, y);
-            //        int newRed = Math.Abs(color.R - 255);
-            //        int newGreen = Math.Abs(color.G - 255);
-            //        int newBlue = Math.Abs(color.B - 255);
-            //        Color newColor = Color.FromArgb(newRed, newGreen, newBlue);
-            //        transformedBitmap.SetPixel(x, y, newColor);
-            //    }
-            //} 
+
+            
+
+            for (int y = 0; y < transformedBitmap.Height; y++)
+            {
+                for (int x = 0; x < transformedBitmap.Width; x++)
+                {
+                    Color color = transformedBitmap.GetPixel(x, y);
+                    int newRed = Math.Abs(color.R - 255);
+                    int newGreen = Math.Abs(color.G - 255);
+                    int newBlue = Math.Abs(color.B - 255);
+                    Color newColor = Color.FromArgb(newRed, newGreen, newBlue);
+                    transformedBitmap.SetPixel(x, y, newColor);
+                }
+            }
+
+            pictureBox1.Image = transformedBitmap;
+            //pictureBox1.Invalidate();
         }
     }
 }
