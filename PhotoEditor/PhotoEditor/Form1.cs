@@ -96,6 +96,7 @@ namespace PhotoEditor
 
             if (folderBrowser.ShowDialog() == DialogResult.OK && folderBrowser.SelectedPath != root)
             {
+                progressBar1.Visible = true;
                 clearListView();
                 root = folderBrowser.SelectedPath;
                 currentDirectory = new DirectoryInfo(root);
@@ -167,6 +168,7 @@ namespace PhotoEditor
                 }
                 try
                 {
+                    System.Threading.Thread.Sleep(25);
                     if (file.Extension.ToLower() == ".jpg")
                     {
                         byte[] bytes = System.IO.File.ReadAllBytes(file.FullName);
