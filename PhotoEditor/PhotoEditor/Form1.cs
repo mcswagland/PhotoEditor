@@ -265,7 +265,7 @@ namespace PhotoEditor
                     }
                     clearListView();
 
-                    if (e.Node.Text != root.Substring(root.LastIndexOf('\\') + 1))
+                    if (e.Node.Text != root.Substring(root.LastIndexOf('\\') + 1)&& e.Node.Text != root)
                     {
                         string path;
                         if(root.Contains('\\'))
@@ -344,6 +344,12 @@ namespace PhotoEditor
                 //http://stackoverflow.com/questions/13680415/how-to-open-explorer-with-a-specific-file-selected
                 Process.Start("explorer.exe", string.Format("/select,\"{0}\"", path));
             }
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutBox1 aboutBox = new AboutBox1();
+            aboutBox.ShowDialog();
         }
     
     }
