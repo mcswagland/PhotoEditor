@@ -198,7 +198,14 @@ namespace PhotoEditor
             string result = path;
             if(node.Parent != null)
             {
-                result = buildDirectoryPath(node.Parent, node.Parent.Text) + '\\' + result;
+                if (node.Parent.Text.Contains('\\'))
+                {
+                    result = buildDirectoryPath(node.Parent, node.Parent.Text) + result;
+                }
+                else
+                {
+                    result = buildDirectoryPath(node.Parent, node.Parent.Text) + '\\' + result;
+                }
             }
             return result;
         }
@@ -260,7 +267,15 @@ namespace PhotoEditor
 
                     if (e.Node.Text != root.Substring(root.LastIndexOf('\\') + 1))
                     {
-                        string path = root.Substring(0, root.LastIndexOf('\\')) + '\\' + buildDirectoryPath(e.Node, e.Node.Text);
+                        string path;
+                        if(root.Contains('\\'))
+                        {
+                            path = buildDirectoryPath(e.Node, e.Node.Text);
+                        }
+                        else
+                        {
+                            path = root.Substring(0, root.LastIndexOf('\\')) + '\\' + buildDirectoryPath(e.Node, e.Node.Text);
+                        }
                         currentDirectory = new DirectoryInfo(path);
                     }
                     else
