@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 
 namespace PhotoEditor
 {
@@ -33,16 +34,17 @@ namespace PhotoEditor
         {
             InitializeComponent();
 
-            listView1.Columns.Add("Name", -2, HorizontalAlignment.Left);
-            listView1.Columns.Add("Date", -2, HorizontalAlignment.Left);
-            listView1.Columns.Add("Size", 40, HorizontalAlignment.Right);
+            listView1.Columns.Add("Name", 150, HorizontalAlignment.Left);
+            listView1.Columns.Add("Date", 150, HorizontalAlignment.Left);
+            listView1.Columns.Add("Size", 80, HorizontalAlignment.Left);
 
+            listView1.MultiSelect = false;
             imageListLarge.ImageSize = new Size(100, 100);
             imageListSmall.ImageSize = new Size(64, 64);
             listView1.SmallImageList = imageListSmall;
             listView1.LargeImageList = imageListLarge;
-            //change this to details
-            listView1.View = View.SmallIcon;
+
+            listView1.View = View.Details;
         }
 
 
@@ -94,7 +96,9 @@ namespace PhotoEditor
 
             if (folderBrowser.ShowDialog() == DialogResult.OK && folderBrowser.SelectedPath != root)
             {
-
+                clearListView();
+                root = folderBrowser.SelectedPath;
+                currentDirectory = new DirectoryInfo(root);
                 directoryView.Nodes.Clear();
                 root = folderBrowser.SelectedPath;
                 if (!directoryWorker.IsBusy)
@@ -208,6 +212,7 @@ namespace PhotoEditor
 
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
+            //dont think this ever gets called, maybe should delete
             PhotoEditorForm photoEditor = new PhotoEditorForm();
             photoEditor.ShowDialog();
         }
@@ -216,7 +221,8 @@ namespace PhotoEditor
         {
             var a = listView1.SelectedItems[0];
             Image img = fullSizeImages[listView1.SelectedItems[0].ImageIndex];
-            PhotoEditorForm photoEditor = new PhotoEditorForm(img);
+            string filePath = currentDirectory.ToString() + '\\' + listView1.SelectedItems[0].Text;
+            PhotoEditorForm photoEditor = new PhotoEditorForm(img, filePath);
             photoEditor.ShowDialog();
         }
 
@@ -231,6 +237,14 @@ namespace PhotoEditor
                 && hitTest.Location == TreeViewHitTestLocations.Label;
         }
 
+        private void clearListView()
+        {
+            listView1.SmallImageList.Images.Clear();
+            listView1.LargeImageList.Images.Clear();
+            fullSizeImages.Clear();
+            listView1.Items.Clear();
+        }
+
         private void directoryView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (IsClickOnText(directoryView, e.Node, e.Location))
@@ -242,9 +256,7 @@ namespace PhotoEditor
                     {
                         imageListWorker.CancelAsync();
                     }
-                    listView1.SmallImageList.Images.Clear();
-                    listView1.LargeImageList.Images.Clear();
-                    listView1.Clear();
+                    clearListView();
 
                     if (e.Node.Text != root.Substring(root.LastIndexOf('\\') + 1))
                     {
@@ -257,16 +269,67 @@ namespace PhotoEditor
                     }
 
                     if (!imageListWorker.IsBusy)
+                    {
+                        progressBar1.Visible = true;
                         imageListWorker.RunWorkerAsync();
+                    }
                 }
             }
         }
 
         private void imageListWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            progressBar1.Dispose();
+            progressBar1.Visible = false;
         }
 
+        private void detailsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(!detailsToolStripMenuItem.Checked)
+            {
+                detailsToolStripMenuItem.Checked = true;
+                listView1.View = View.Details;
+            }
+            smallToolStripMenuItem.Checked = false;
+            largeToolStripMenuItem.Checked = false;
+        }
+
+        private void smallToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(!smallToolStripMenuItem.Checked)
+            {
+                smallToolStripMenuItem.Checked = true;
+                listView1.View = View.SmallIcon;
+            }
+            detailsToolStripMenuItem.Checked = false;
+            largeToolStripMenuItem.Checked = false;
+        }
+
+        private void largeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(!largeToolStripMenuItem.Checked)
+            {
+                largeToolStripMenuItem.Checked = true;
+                listView1.View = View.LargeIcon;
+            }
+            detailsToolStripMenuItem.Checked = false;
+            smallToolStripMenuItem.Checked = false;
+        }
+
+        private void locateOnDiskToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(listView1.SelectedItems.Count == 0)
+            {
+                DialogResult result = MessageBox.Show("Please select an image, then select this option again to locate it on disk.", "Select an image", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+            }
+            else
+            {
+                string path = currentDirectory.ToString() + '\\' + listView1.SelectedItems[0].Text;
+
+                //code suggested by Mahmoud Al-Qudsi at stack overflow
+                //http://stackoverflow.com/questions/13680415/how-to-open-explorer-with-a-specific-file-selected
+                Process.Start("explorer.exe", string.Format("/select,\"{0}\"", path));
+            }
+        }
     
     }
 }

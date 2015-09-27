@@ -119,7 +119,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PhotoEditorForm";
-            this.Text = "PhotoEditorForm";
+            this.Text = "Photo Editor";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.brightnessBar)).EndInit();
             this.ResumeLayout(false);
