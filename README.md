@@ -1,4 +1,6 @@
 # PhotoEditor
+Brock McFarland and Shane O'Keefe
+
 Brief Summary
 1. This program loads image files, giving users the choice to edit the files by inverting them, adding a tint color, and changing the brightness. Edited photos can then be saved back to disk.
 
