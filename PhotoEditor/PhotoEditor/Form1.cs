@@ -268,7 +268,7 @@ namespace PhotoEditor
                     if (e.Node.Text != root.Substring(root.LastIndexOf('\\') + 1)&& e.Node.Text != root)
                     {
                         string path;
-                        if(root.Contains('\\'))
+                        if(directoryView.TopNode.Text.Contains('\\'))
                         {
                             path = buildDirectoryPath(e.Node, e.Node.Text);
                         }
